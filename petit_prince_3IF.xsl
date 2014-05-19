@@ -45,9 +45,6 @@
 	</xsl:template>
 	
 	<xsl:template match="phrase[@langue='hongrois']" name="hongrois">
-		<xsl:if test="position() = 1">
-			<br/>
-		</xsl:if>
 		<span style="color:brown;font-style:italic;" >
 			<xsl:apply-templates/>
 		</span>
@@ -72,6 +69,13 @@
 			<xsl:apply-templates/>
 		</p>	
 	</xsl:template> 
+	
+	<xsl:template match="phrase">
+		<xsl:apply-templates/>
+		<xsl:if test="@langue = 'francais' and following-sibling::*[1]/@langue='hongrois' ">
+			<br/>
+		</xsl:if>
+	</xsl:template>
 	
 	<xsl:template match="paragraphe[@type='dialogue']">
 	<div style="width:90%;margin:auto;" >
@@ -104,7 +108,7 @@
 	</xsl:template>
 	
 	<xsl:template match="en-tete">
-		<div style="width:60%;margin:auto;" >
+		<div style="width:70%;margin:auto;" >
 			<div style="float:left;" >
 				<img src="images/prince.png" alt="Prince"/>
 			</div>
@@ -120,9 +124,9 @@
 <xsl:template match="corps">
 	
 	<h2>Début du texte :</h2>
-		<xsl:apply-templates/>
-		<h2>Fin du texte.</h2>
-		<hr/>
+	<xsl:apply-templates/>
+	<h2>Fin du texte.</h2>
+	<hr/>
 	
 </xsl:template>
 
