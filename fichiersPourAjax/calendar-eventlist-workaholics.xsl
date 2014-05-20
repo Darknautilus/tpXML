@@ -3,32 +3,36 @@
 	<xsl:output method="html" version="1.0" indent="yes"/>
 
 	<xsl:template match="//event[contains(./title,'Workaholics')]">
-		<ul class="media-list">
-			  <li class="media">
-			  	<a class="pull-left" id="event-image" href="#">
-			  	</a>
-				    <div class="media-body"  id="event-infos">
-				     	<h3><xsl:value-of select="title"/></h3>
-				     	<p>
-						le <xsl:value-of select="substring(dtstart,7,2)"/>-<xsl:value-of select="substring(dtstart,5,2)"/>-<xsl:value-of select="substring(dtstart,1,4)"/> de <xsl:value-of select="substring(dtstart,10,2)"/>H<xsl:value-of select="substring(dtstart,12,2)"/> à <xsl:value-of select="substring(dtend,10,2)"/>H<xsl:value-of select="substring(dtend,12,2)"/><br/>
-						<xsl:value-of select="summary"/><br/>
-						<a>
-							<xsl:attribute name="href">
-								<xsl:value-of select='url'/>
-							</xsl:attribute>
-							<xsl:value-of select="url"/>
-						</a><br/>
-						<xsl:value-of select="description"/>
-					</p>
-				    </div>
-			  </li>
-		</ul>
+		<infos>
+			<title><xsl:value-of select="title"/></title>
+			<begindate>
+				<day><xsl:value-of select="substring(dtstart,7,2)"/></day>
+				<month><xsl:value-of select="substring(dtstart,5,2)"/></month>
+				<year><xsl:value-of select="substring(dtstart,1,4)"/></year>
+				<hour><xsl:value-of select="substring(dtstart,10,2)"/></hour>
+				<minute><xsl:value-of select="substring(dtstart,12,2)"/></minute>
+			</begindate>
+			<enddate>
+				<day></day>
+				<month></month>
+				<year></year>
+				<hour><xsl:value-of select="substring(dtend,10,2)"/></hour>
+				<minute><xsl:value-of select="substring(dtend,12,2)"/></minute>
+			</enddate>
+			<summary>
+				<xsl:value-of select="summary"/>
+			</summary>
+			<url><xsl:value-of select='url'/></url>
+			<description>
+				<xsl:value-of select="description"/>
+			</description>
+		</infos>
 	</xsl:template>
 	
 	<xsl:template match="/">
-	<body>
+	<event>
 		<xsl:apply-templates  select="//event[contains(./title,'Workaholics')]"/>
-	</body>
+	</event>
 	</xsl:template>
 	
 </xsl:stylesheet>

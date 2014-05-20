@@ -32,15 +32,7 @@
           
           return x;
         }
-          
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
-        //remplace le contenu de l'élement html avec l'identifiant "nom" par leNom passé en paramètre
-        function setNom(leNom) {
-          var elementHtmlARemplir = window.document.getElementById("leNomAModifier");
-          elementHtmlARemplir.innerHTML = leNom;
-        }
-		
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////      
         //change l'arrière plan de la page en bleu et le texte du bouton en blanc
         function changeBackground() {
           var bouton = window.document.getElementById("myButton1");
@@ -49,7 +41,7 @@
         }
           
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        function ajaxEvent(xmlDocumentUrl, xslDocumentUrl, newElementName) {
+        function ajaxEvent(xmlDocumentUrl, xslDocumentUrl) {
           
           var xsltProcessor = new XSLTProcessor();
           
@@ -70,138 +62,71 @@
           // Premier élément fils du parent
           var elementHtmlARemplacer = recupererPremierElementEnfant(elementHtmlParent);
           // Premier élément "elementName" du nouveau document (par exemple, "ul", "table"...)
-          var elementAInserer = newXmlDocument.getElementsByTagName(newElementName)[0];
+          var event = newXmlDocument.getElementsByTagName("event")[0];
+		  var eventinfos = event.getElementsByTagName("infos")[0];
+		  var begindate = eventinfos.getElementsByTagName("begindate")[0];
+		  var enddate = eventinfos.getElementsByTagName("enddate")[0];
+		  
+		  var eventstruct = document.createElement("div");
+		  eventstruct.setAttribute("class","event")
+		  
+		  var title = document.createElement("h4");
+		  title.innerHTML = eventinfos.getElementsByTagName("title")[0].innerHTML;
+		  eventstruct.appendChild(title);
+		  
+		  var liste = document.createElement("ul");
+		  liste.style.listStyle = "none";
+		  liste.style.padding = 0;
+		  eventstruct.appendChild(liste);
+		  
+		  var date = document.createElement("li");
+		  date.setAttribute("class","event-date");
+		  date.innerHTML = "le "+begindate.getElementsByTagName("day")[0].innerHTML+"-"+begindate.getElementsByTagName("month")[0].innerHTML+"-"+begindate.getElementsByTagName("year")[0].innerHTML+" de "+begindate.getElementsByTagName("hour")[0].innerHTML+"H"+begindate.getElementsByTagName("minute")[0].innerHTML+" à "+enddate.getElementsByTagName("hour")[0].innerHTML+"H"+enddate.getElementsByTagName("minute")[0].innerHTML;
+		  liste.appendChild(date);
+		  
+		  var urlText = document.createTextNode(eventinfos.getElementsByTagName("url")[0].innerHTML);
+		  
+		  var summary = document.createElement("li");
+		  summary.setAttribute("class","event-summary");
+		  var summaryLink = document.createElement("a");
+		  summaryLink.setAttribute("href",urlText.data);
+		  summaryLink.innerHTML = eventinfos.getElementsByTagName("summary")[0].innerHTML;
+		  summary.appendChild(summaryLink);
+		  liste.appendChild(summary);
+		  
+		  var url = document.createElement("li");
+		  url.setAttribute("class","event-url");
+		  url.innerHTML = urlText.data;
+		  liste.appendChild(url);
+		  
+		  var description = document.createElement("li");
+		  description.setAttribute("class","event-description");
+		  description.innerHTML = eventinfos.getElementsByTagName("description")[0].innerHTML;
+		  liste.appendChild(description);
           
           // Remplacement de l'élément
-          elementHtmlParent.replaceChild(elementAInserer,elementHtmlARemplacer);
+          elementHtmlParent.replaceChild(eventstruct,elementHtmlARemplacer);
 			
 			
 			document.getElementById("myButton3").style.display = "inline";
         }
 		
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		function movieDetails() {
-			var details = getHttpJSON("http://www.omdbapi.com/?t=Workaholics");
-			
-			var photo = document.getElementById("event-image");
-			photo.innerHTML = "<img height= \"200px\" class=\"media-object\" src=\""+details.Poster+"\" alt=\"Poster\"/>"
-			
-			var infos = document.getElementById("event-infos");
-			infos.innerHTML += "<span class=\"label label-default\">"+details.Year+"</span> "
-			infos.innerHTML += "<span class=\"label label-default\">"+details.Rated+"</span> "
-			infos.innerHTML += "<span class=\"label label-default\">"+details.Released+"</span> "
-			infos.innerHTML += "<span class=\"label label-default\">"+details.Runtime+"</span> "
-			infos.innerHTML += "<span class=\"label label-default\">"+details.Genre+"</span> "
-			infos.innerHTML += "<span class=\"label label-default\">"+details.Language+"</span> "
-			infos.innerHTML += "<span class=\"label label-default\">"+details.Country+"</span> "
-			infos.innerHTML += "<span class=\"label label-default\">"+details.imdbRating+"</span> "
-			infos.innerHTML += "<span class=\"label label-default\">"+details.imdbVotes+"</span> "
-		}
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //charge le fichier XML se trouvant à l'URL relative donné dans le paramètreet le retourne
-        function getHttpXML(xmlDocumentUrl) { 
-          
-          var httpAjax;
-          
-          httpAjax = window.XMLHttpRequest ?
-            new XMLHttpRequest() :
-            new ActiveXObject('Microsoft.XMLHTTP');
-          
-          if (httpAjax.overrideMimeType) {
-            httpAjax.overrideMimeType('text/xml');
-          }
-          
-          //chargement du fichier XML à l'aide de XMLHttpRequest synchrone (le 3° paramètre est défini à false)
-          httpAjax.open('GET', xmlDocumentUrl, false);
-          httpAjax.send();
-          
-          return httpAjax.responseXML;
-        }
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Charge le fichier JSON se trouvant à l'URL donnée en paramètre et le retourne
-        function getHttpJSON(jsonDocumentUrl) {
-
-            var httpAjax;
-
-            httpAjax = window.XMLHttpRequest ?
-                        new XMLHttpRequest() :
-                        new ActiveXObject('Microsoft.XMLHTTP');
-
-                if (httpAjax.overrideMimeType) {
-                    httpAjax.overrideMimeType('text/xml');
-                }
-
-                // chargement du fichier JSON à l'aide de XMLHttpRequest synchrone (le 3° paramètre est défini à false)
-                httpAjax.open('GET', jsonDocumentUrl, false);
-                httpAjax.send();
-
-                var responseData = eval("(" + httpAjax.responseText + ")");
-
-                return responseData;
-            } 
-          
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //extraction de noms d'employées du fichier à l'aide de Javascript puis modification du "nom"
-        function ajaxCreateurs(xmlDocumentUrl) {
-
-          //chargement du fichier XML
-          var xmlDocument = getHttpXML(xmlDocumentUrl);
-          //extraction des noms à partir du document XML
-          var lesNoms = xmlDocument.getElementsByTagName("unCreateur");
-
-          // Parcours de la liste des noms et
-          // construction d'une chaine de charactères contenant les noms séparés par des espaces
-          // longueur d'une liste : attribut 'length'
-          // accès au texte d'un noeud "LastName" : NOM_NOEUD.firstChild.nodeValue
-          var chaineDesNoms = "";
-          for (i=0;i<lesNoms.length;i++) {
-            if (i>0) { chaineDesNoms = chaineDesNoms +", "; }
-	        chaineDesNoms=chaineDesNoms +lesNoms[i].firstChild.nodeValue + " ";
-          }
-
-          // Appel (ou recopie) de setBinome(...) ou bien autre façon de modifier le texte de l'élément "span"
-          setNom(chaineDesNoms);
-        }
-
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        function ajaxBinomeDate(xmlDocumentUrl, xslDocumentUrl, newElementName) {
-          
-          var xsltProcessor = new XSLTProcessor();
-          
-          // Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone (le 3° paramètre est défini à false)
-          var xslDocument = getHttpXML(xslDocumentUrl);
-          
-          // Importation du .xsl
-          xsltProcessor.importStylesheet(xslDocument);
-          
-          // Chargement du fichier XML à l'aide de XMLHttpRequest synchrone (le 3° paramètre est défini à false)
-          var xmlDocument =  getHttpXML(xmlDocumentUrl);
-          
-          // Création du document XML transformé par le XSL
-          var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
-
-          // Recherche du parent (dont l'id est "remplacerCeci") de l'élément à remplacer dans le document HTML courant
-          var elementHtmlParent = window.document.getElementById("remplacerCeci");
-          // Premier élément fils du parent
-          var elementHtmlARemplacer = recupererPremierElementEnfant(elementHtmlParent);
-          // Premier élément "elementName" du nouveau document (par exemple, "ul", "table"...)
-          var elementAInserer = newXmlDocument.getElementsByTagName(newElementName)[0];
-          
-          // Remplacement de l'élément
-          elementHtmlParent.replaceChild(elementAInserer,elementHtmlARemplacer);
-
-        }
-          
-        function ajaxDetailsEpisode12Workaholics(fichierJSON, idElementARemplacer) {
-
-            var elementHtmlParent = window.document.getElementById(idElementARemplacer);
+		function movieDetails(idElementARemplacer) {
+		
+			var elementHtmlParent = window.document.getElementById(idElementARemplacer);
 
             // Récupèration de l'élement à remplacer
             var episode = recupererPremierElementEnfant(elementHtmlParent);
+			
+			var title = episode.getElementsByTagName("h4")[0].innerHTML;
+			var date = episode.getElementsByClassName("event-date")[0].innerHTML;
+			var summary = episode.getElementsByClassName("event-summary")[0].innerHTML;
+			var url = episode.getElementsByClassName("event-url")[0].innerHTML;
+			var description = episode.getElementsByClassName("event-description")[0].innerHTML;
             
             // Chargement du fichier JSON
-            var response = getHttpJSON(fichierJSON);        
+            var response = getHttpJSON("http://www.omdbapi.com/?t=Workaholics");        
             
             // Creation de l'élément <ul> correspondant à la liste (media-list)
             var listItems = document.createElement("ul");
@@ -215,7 +140,7 @@
             // Creation de l'élément <a> contenant la miniature
             var itemImageLink = document.createElement("a");
             itemImageLink.setAttribute("class", "pull-left thumbnail-size");
-            itemImageLink.setAttribute("href", response.URLEpisode12);
+            itemImageLink.setAttribute("href", "#");
             item.appendChild(itemImageLink);
             
             // Création de l'élément image de la miniature
@@ -232,30 +157,27 @@
             // Création de l'élément <h4> correspondant au titre
             var itemBodyTitle = document.createElement("h4");
             itemBodyTitle.setAttribute("class", "media-heading title");
-            itemBodyTitle.innerHTML = response.Title;
+            itemBodyTitle.innerHTML = title;
             itemBody.appendChild(itemBodyTitle);
             
             // Création de l'élément <div> correspondant à la date
             var itemBodyDate = document.createElement("div");
-            itemBodyDate.innerHTML = "le " + response.DateEpisode12 + " de " + response.HeureDebutEpisode12 + " à " + response.HeureFinEpisode12;
+            itemBodyDate.innerHTML = date;
             itemBody.appendChild(itemBodyDate);
             
             // Création de l'élément <div> correspondant au titre de l'épisode
             var itemBodyTitle = document.createElement("div");
+			itemBodyTitle.innerHTML = summary;
             itemBody.appendChild(itemBodyTitle);
-            var itemBodyTitleLink = document.createElement("a");
-            itemBodyTitleLink.setAttribute("href", response.URLEpisode12);
-            itemBodyTitleLink.innerHTML = response.TitleEpisode12;
-            itemBodyTitle.appendChild(itemBodyTitleLink);
             
             // Création de l'élément <div> correspondant à l'url
             var itemBodyUrl = document.createElement("div");
-            itemBodyUrl.innerHTML = response.URLEpisode12;
+            itemBodyUrl.innerHTML = url;
             itemBody.appendChild(itemBodyUrl);
             
             // Création de l'élément <div> correspondant à la description
             var itemBodyDescription = document.createElement("div");
-            itemBodyDescription.innerHTML = response.SummaryEpisode12;
+            itemBodyDescription.innerHTML = description;
             itemBody.appendChild(itemBodyDescription);
 
             // Création de l'élément <div> correspondant aux caractéritiques du programme
@@ -308,7 +230,76 @@
             moreInfos.appendChild(imdbRatingLabel);
             moreInfos.appendChild(document.createTextNode (" "));
             moreInfos.appendChild(imdbVotesLabel);
+			
+		}
+		
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		function getAllEvents(xmlDocumentUrl,xslDocumentUrl){
+			var xsltProcessor = new XSLTProcessor();
+		  
+			// Chargement du fichier XSL à l'aide de XMLHttpRequest synchrone (le 3° paramètre est défini à false)
+			var xslDocument = getHttpXML(xslDocumentUrl);
+			  
+			// Importation du .xsl
+			xsltProcessor.importStylesheet(xslDocument);
+			  
+			// Chargement du fichier XML à l'aide de XMLHttpRequest synchrone (le 3° paramètre est défini à false)
+			var xmlDocument =  getHttpXML(xmlDocumentUrl);
+			  
+			// Création du document XML transformé par le XSL
+			var newXmlDocument = xsltProcessor.transformToDocument(xmlDocument);
+		
+			// Recherche du parent (dont l'id est "remplacerCeci") de l'élément à remplacer dans le document HTML courant
+			var elementHtmlParent = window.document.getElementById("remplacerCeci");
+			// Premier élément fils du parent
+			var elementHtmlARemplacer = recupererPremierElementEnfant(elementHtmlParent);
+			// Remplacement de l'élément
+			elementHtmlParent.replaceChild(newXmlDocument,elementHtmlARemplacer);
+		}
+		
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //charge le fichier XML se trouvant à l'URL relative donné dans le paramètreet le retourne
+        function getHttpXML(xmlDocumentUrl) { 
+          
+          var httpAjax;
+          
+          httpAjax = window.XMLHttpRequest ?
+            new XMLHttpRequest() :
+            new ActiveXObject('Microsoft.XMLHTTP');
+          
+          if (httpAjax.overrideMimeType) {
+            httpAjax.overrideMimeType('text/xml');
+          }
+          
+          //chargement du fichier XML à l'aide de XMLHttpRequest synchrone (le 3° paramètre est défini à false)
+          httpAjax.open('GET', xmlDocumentUrl, false);
+          httpAjax.send();
+          
+          return httpAjax.responseXML;
         }
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Charge le fichier JSON se trouvant à l'URL donnée en paramètre et le retourne
+        function getHttpJSON(jsonDocumentUrl) {
+
+            var httpAjax;
+
+            httpAjax = window.XMLHttpRequest ?
+                        new XMLHttpRequest() :
+                        new ActiveXObject('Microsoft.XMLHTTP');
+
+                if (httpAjax.overrideMimeType) {
+                    httpAjax.overrideMimeType('text/xml');
+                }
+
+                // chargement du fichier JSON à l'aide de XMLHttpRequest synchrone (le 3° paramètre est défini à false)
+                httpAjax.open('GET', jsonDocumentUrl, false);
+                httpAjax.send();
+
+                var responseData = eval("(" + httpAjax.responseText + ")");
+
+                return responseData;
+            } 
 
     </script>
 </head>
@@ -321,9 +312,9 @@
 	
 <p>
     <input id="myButton1" type="button" value="1. (fn : changeBackground)" onClick="changeBackground();" /><br />
-    <input id="myButton2" type="button" value="2. Feuille de style xsl (calendar-eventlist-workaholics.xsl) sur xml (calendar-short.xml) (fn : ajaxEvent)" onClick="ajaxEvent('fichiersPourAjax/calendar-short.xml','fichiersPourAjax/calendar-eventlist-workaholics.xsl','body');" /><br />
-    <input id="myButton3" type="button" value="3. AJAX avec JSON sur OMDB (fn : movieDetails)" onClick="movieDetails();" style="display:none;"/><br />
-    <input id="myButton4" type="button" value="4. Affichage des détails d'un évenement (fn : ajaxDetailsEpisode12Workaholics)" onClick="ajaxDetailsEpisode12Workaholics('fichiersPourAjax/exemple-event-workaholics.json','remplacerCeci');" /><br />
+    <input id="myButton2" type="button" value="2. Feuille de style xsl (calendar-eventlist-workaholics.xsl) sur xml (calendar-short.xml) (fn : ajaxEvent)" onClick="ajaxEvent('fichiersPourAjax/calendar-short.xml','fichiersPourAjax/calendar-eventlist-workaholics.xsl','event');" /><br />
+    <input id="myButton3" type="button" value="3. AJAX avec JSON sur OMDB (fn : movieDetails)" onClick="movieDetails('remplacerCeci');" style="display:none;"/><br />
+    <input id="myButton4" type="button" value="4. Affichage de tous les événements (fn : getAllEvents)" onClick="getAllEvents('fichiersPourAjax/calendar-short.xml','fichiersPourAjax/calendar-eventlist.xsl');" /><br />
 </p>
 
 <div>
