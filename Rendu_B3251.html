@@ -1,0 +1,119 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Rendu Binome B3251 - TP BDSS</title>
+</head>
+<body>
+	<h1 align="center"> TP BDSS - Aurélien BERTRON, Gabriel Caê BOUNOUS</h1></br>
+	<h2>Première Partie: XML, DTD, XPath, XSTL</h2>
+	<h3>Etape 1: Mise à jour de l'instance [XML,DTD]</h3>
+	<p> 
+		<ul>Il manque le champ “email” pour que la DTD soit respectée.
+En rajoutant la ligne suivante, le document est correct :
+<email>mon.email@insa-lyon.fr</email>
+		</ul>
+	</p>
+	
+	<h3>Etape 2 : Exploration de l'instance [XPath]</h3>
+	<ol>
+		<li>
+			<div>
+			<p>Les auteurs de la mise en forme</p>
+			<ul>XPATH: <li>//unCreateur</li> </ul><br/>
+			<img src="./CR/xpath1.png">Resultat 1</img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>Les paragraphes de dialogue</p>
+			<ul>XPATH: <li>//paragraphe[@type='dialogue']</li> </ul><br/>
+			<img src="./CR/xpath2.png">Resultat 2</img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>Les phrases en français</p>
+			<ul>XPATH: <li>//phrase[@langue='francais']</li> </ul><br/>
+			<img src="./CR/xpath3.png">Resultat 3</img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>La deuxième phrase de chaque paragraphe</p>
+			<ul>XPATH: <li>//phrase[2]</li> </ul><br/>
+			<img src="./CR/xpath4.png">Resultat 4</img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>La dixième phrase du texte (pensez à utiliser les parenthèses)</p>
+			<ul>XPATH: <li>(//phrase)[10]</li> </ul><br/>
+			<img src="./CR/xpath5.png">Resultat 5</img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>Les phrases contenant le mot "mouton" (utilisez la fonction contains())</p>
+			<ul>XPATH: <li>///phrase[contains(text(),'mouton')]</li> </ul><br/>
+			<img src="./CR/xpath6.png">Resultat 6</img>
+			</div>
+		</li>
+	</ol>
+	
+	<h3>Etape 3 : Mise en forme du corpus Le Petit Prince [XSLT]</h3>
+	<p>
+		<ul>Voici le lien vers notre page xml: <a href="./petit_prince_3IF.xml">Notre page "Petit Prince"</a>(ouvrir avec FireFox)</ul>
+	</p>
+	
+	<h2> Deuxième partie : XQuery </h2>
+	<ol>
+		<li>
+			<div>
+			<p>Retournez les phrases en français triés en ordre alphabétique</p>
+			<img src="./CR/xquery1.png"></img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>Retournez les phrases françaises contenant le mot "mouton"</p>
+			<img src="./CR/xquery2.png"></img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>Pour chaque paragraphe: donnez son type, le nombre de phrases qui la compose, les modalités de ces phrases (sans répétition) ainsi que les locuteurs. (allez-y étape par étape). Astuce : pour avoir les valeurs uniques des modalités, utilisez la fonction distinct-values</p>
+			<img src="./CR/xquery3.png"></img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>Afficher la version française seulement (respectez la structure en paragraphes)</p>
+			<img src="./CR/xquery4.png"></img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>Afficher uniquement les deuxièmes phrases des paragraphes de la version française</p>
+			<img src="./CR/xquery5.png"></img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>Afficher seulement les dialogues en français du narrateur</p>
+			<img src="./CR/xquery6.png"></img>
+			</div>
+		</li>
+		<li>
+			<div>
+			<p>Afficher toutes les phrases du Petit Prince en français qui comporte le mot "mouton" ainsi que le nombre de ces phrases</p>
+			<img src="./CR/xquery7.png"></img>
+			</div>
+		</li>
+	</ol>
+	
+	<h3>Etape 4 : DOM et Ajax</h3>
+
+<p>Nos réponses sont disponibles sur <a href="PartieAjaxDOM.html">cette page</a></p>
+<p>Nous nous sommes arrêtés à la question 4. Le XSL est fait mais la fonction Javascript renvoie une erreur</p>
+
+</body>
